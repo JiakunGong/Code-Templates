@@ -24,7 +24,13 @@ public class Node {
     int sendCount = Integer.parseInt(args[3]);
 
     // Start the server thread.
+    TCPServer serverThread = new TCPServer(nodeId, localPort, sendCount);
+    serverThread.start();
 
     // Start the client threads.
+    for (int i = 0; i < sendCount; ++i) {
+      TCPClient clientThread = new TCPClient(nodeId, "127.0.0.1", remotePort);
+      clientThread.start();
+    }
   }
 }

@@ -3,10 +3,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
-import com.sun.corba.se.impl.ior.ByteBuffer;
-
-public class TCPServer {
+public class TCPServer extends Thread {
   private String nodeId;
   private int listeningPort;
   private int messageCount;
@@ -40,6 +39,7 @@ public class TCPServer {
           for (int byteIdx = 0; byteIdx < messageSize; ++ byteIdx) {
             buf.put(in.readByte());
           }
+          buf.position(0);
           HashMap<String, Integer> remoteClock = VectorClock.deserialize(buf);
           log("Received " + VectorClock.stringVerionOf(remoteClock));
 
