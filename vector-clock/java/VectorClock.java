@@ -111,4 +111,11 @@ public class VectorClock {
 
     return res;
   }
+
+  /**
+   * Return the string version of the current vector clock.
+   */
+  public static synchronized String stringVersion() {
+    return stringVerionOf(clocks);
+  }
 }
