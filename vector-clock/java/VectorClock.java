@@ -42,24 +42,25 @@ public class VectorClock {
   /**
    * Serialize the vector clock and return as a ByteBuffer.
    */
-  public static synchronized ByteBuffer asBytes() {
+  public static synchronized ByteBuffer serialize() {
     // Get the size of the content.
-    int contentSize = 0;
+    int size = 0;
     for (Map.Entry<String, Integer> nodeClock : clocks.entrySet()) {
-      contentSize += 4; // Use to hold the size of this entry.
-      contentSize += nodeClock.getKey().length; // Key size.
-      contentSize += 4; // Value size.
+      size += 4; // Use to hold the size of this entry.
+      size += nodeClock.getKey().length; // Key size.
+      size += 4; // Value size.
     }
 
     // Serialize the clock.
-    // The first 4 bytes are the size of the remaining content.
-    ByteBuffer buf = ByteBuffer.allocate(4 + contentSize);
-    buf.putInt(contentSize);
+    ByteBuffer buf = ByteBuffer.allocate(size);
     for (Map.Entry<String, Integer> nodeClock : clocks.entrySet()) {
-      buf.putInt(nodeClock.getKey().length + 4); // entry length
+      // Serialize the size of this entry.
+      buf.putInt(nodeClock.getKey().length + 4);
+      // Serialize the key.
       for (int i = 0; i < nodeClock.getKey().length; ++i) {
         buf.putChar(nodeClock.getKey().charAt(i));
       }
+      // Serialize the value.
       buf.putInt(nodeClock.getValue());
     }
 
@@ -67,5 +68,27 @@ public class VectorClock {
     return buf;
   }
 
-  // TODO: Implement the corresponding deserialization as well.
+  /**
+   * Deserialize the given buffer as a vector clock.
+   */
+  public static HashMap<String, Integer> deserialize(ByteBuffer buf) {
+    HashMap<String, Integer> clocks = new HashMap<String, Integer>();
+    
+    // Read the buffer entry by entry until we have consumed all the bytes.
+    while (buf.hasRemaining()) {
+      // Get the size of this entry.
+      int size = buf.getInt();
+      // Get the key.
+      String nodeId = "";
+      for (int i = 0; i < size - 4; ++i) {
+        nodeId += buf.getChar();
+      }
+      // Get the value.
+      int clockTime = buf.getInt();
+      // Construct a new entry.
+      clocks.put(nodeId, clockTime);
+    }
+
+    return clocks;
+  }
 }
