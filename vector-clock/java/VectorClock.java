@@ -89,6 +89,7 @@ public class VectorClock {
       clocks.put(nodeId, clockTime);
     }
 
+    buf.position(0);
     return clocks;
   }
 
