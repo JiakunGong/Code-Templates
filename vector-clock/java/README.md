@@ -8,8 +8,8 @@ deserializes vector clocks from them,
 and merges the received vector clock with the local one.
 The client thread serializes the local vector clock
 and sends it out to another node.
-The local vector clock is incremented before being serialized for sending,
-and before deserializing the received data.
+The local vector clock is incremented right before being serialized for sending,
+and right after receiving data.
 
 The code can be compiled by running the following command:
 
