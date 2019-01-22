@@ -91,4 +91,24 @@ public class VectorClock {
 
     return clocks;
   }
+
+  /**
+   * Return the string version of the given vector clock.
+   */
+  public static String stringVerionOf(HashMap<String, Integer> clock) {
+    String res = "{";
+    boolean first = true;
+    for (Map.Entry<String, Integer> nodeClock : clock.entrySet()) {
+      if (first) {
+        first = false;
+      } else {
+        res += " ";
+      }
+
+      res += nodeClock.getKey() + ":" + nodeClock.getValue();
+    }
+    res += "}";
+
+    return res;
+  }
 }
